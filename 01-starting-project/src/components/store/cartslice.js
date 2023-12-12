@@ -3,25 +3,27 @@ import { createSlice } from "@reduxjs/toolkit";
  const cartSlice = createSlice({
     name: "cart",
     initialState : {
-        items:[],
+        items: [],
         totalQuantity : 0 ,
     },
      reducers : {
         addItemToCart(state, action){
             const newItem = action.payload;
             const existingItem = state.items.find((item) => item.id === newItem.id);
+            state.totalQuantity++;
             if(!existingItem){
                 state.items.push({
-                    itemId : newItem.id,
+                    id : newItem.id,
                     price : newItem.price,
                     quantity : 1,
-                    totalPrice : newItem.totalPrice,
+                    totalPrice : newItem.price,
                     name : newItem.title
                 });
             }
               else {
                     existingItem.quantity++;
-                    existingItem.totalPrice = existingItem.totalPrice + newItem.price
+                    const priceToAdd = parseFloat(newItem.price); // or use parseInt for integer values
+                    existingItem.totalPrice = parseFloat(existingItem.totalPrice) + priceToAdd;
                    }
         },
         removeItemFromCart (state, action) {
@@ -34,6 +36,8 @@ import { createSlice } from "@reduxjs/toolkit";
             }
             else {
                 existingItem.quantity--;
+                const priceToremove = parseFloat(existingItem.price); // or use parseInt for integer values
+                existingItem.totalPrice = parseFloat(existingItem.totalPrice) - priceToremove;
             }
 
         }
